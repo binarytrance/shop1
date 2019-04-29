@@ -1,0 +1,190 @@
+<div
+  class="cart"
+  data-js-class="Cart"
+  data-section-id="{{ section.id }}"
+  data-section-type="cart"
+>
+
+  <header class="row">
+  <div class="columns">
+    <h1 class="page-title">{{ 'cart.page_title' | t }}</h1>
+  </div>
+  </header>
+
+  {% if cart.item_count > 0 %}
+  <form action="/cart" method="post" class="custom">
+  <div class="row">
+    <div class="columns" style="overflow: scroll;">
+      <table width="100%" class="cart-table">
+        <thead>
+          <tr>
+            <th class="image">&nbsp;</th>
+            <th class="title">&nbsp;</th>
+            <th class="quantity">{{ 'cart.quantity' | t }}</th>
+            <th class="total">{{ 'cart.total' | t }}</th>
+            <th class="remove">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for item in cart.items %}
+          {% if forloop.first %}
+            {% assign coll_handle = item.product.collections.first.handle %}
+            {% if coll_handle == 'frontpage' or coll_handle == '' %}{% assign coll_handle = 'all' %}{% endif %}
+          {% endif %}
+          <tr>
+            <td class="image">
+              <a href="{{ item.url | within: collections.all }}">
+                {% include 'framework--image', image: item.image, widths: '120,240' %}
+              </a>
+
+              <p class="mobile-title">
+                <a href="{{ item.product.url }}">{{ item.title }}</a>
+                {% assign property_size = item.properties | size %}
+                  {% if property_size > 0 %}
+                    {% for p in item.properties %}
+                    {% if p.first contains '_io_' %}
+                    {% continue %}
+                    {% endif %}
+                      {% unless p.last == blank %}
+                        {{ p.first }}:
+
+                        {% comment %}
+                          Check if there was an uploaded file associated
+                        {% endcomment %}
+                        {% if p.last contains '/uploads/' %}
+                          <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                        {% else %}
+                          {{ p.last }}
+                        {% endif %}
+
+                        <br>
+                      {% endunless %}
+                    {% endfor %}
+                  {% endif %}
+              </p>
+
+            </td>
+            <td class="title">
+              <p><a href="{{ item.url | within: collections.all }}">{{ item.title }}</a></p>
+
+              {% assign property_size = item.properties | size %}
+              {% if property_size > 0 %}
+                {% for p in item.properties %}
+                {% if p.first contains '_io_' %}
+                {% continue %}
+                {% endif %}
+                  {% unless p.last == blank %}
+                    {{ p.first }}:
+
+                    {% comment %}
+                      Check if there was an uploaded file associated
+                    {% endcomment %}
+                    {% if p.last contains '/uploads/' %}
+                      <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                    {% else %}
+                      {{ p.last }}
+                    {% endif %}
+
+                    <br>
+                  {% endunless %}
+                {% endfor %}
+              {% endif %}
+
+
+            </td>
+            <td class="quantity"><input type="text" class="field styled-input" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" /></td>
+            <td class="total"><span class="money">{{ item.line_price | money }}</span></td>
+            <td class="remove">
+              <a title="Remove"
+                 href="/cart/change?line={{ forloop.index }}&quantity=0"
+                 class="cross"
+                 tabindex="0">
+                {% include 'snippet-symbol' with 'cross' %}
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div> <!-- .row -->
+
+  <div class="row">
+
+    {% capture arrow-left %}
+      <span>
+        <a href="/collections/{{ coll_handle }}">
+          {% include 'snippet-symbol' with 'arrow-left' %}
+          {{ 'cart.continue_shopping' | t }}
+        </a>
+      </span>
+    {% endcapture %}
+
+    <div class="columns large-5">
+
+      {% if section.settings.cart-notes-show %}
+        <div class="order-notes">
+          <div class="container">
+            <h3>{{ 'cart.order_notes' | t }}</h3>
+            <textarea id="cart-notes-area" name="note">{{ cart.note }}</textarea>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="continue-shopping show--medium-large">
+        {{ arrow-left }}
+      </div>
+    </div>
+
+
+    <div class="columns large-7">
+      <div class="totals columns">
+        <h3><strong>{{ 'cart.subtotal' | t }} <span class="money"><span id="bk-cart-subtotal-price">{{ cart.total_price | money }}</span></span></strong></h3>
+        <p class="shipping-taxes-notification">{{ 'cart.shipping_taxes_notification' | t}}</p>
+        <input class="button--secondary" type="submit" name="update" value="{{ 'cart.update_cart' | t }}" />
+        <input class="button" type="submit" name="checkout" value="{{ 'cart.checkout' | t }}" />
+
+        {% if additional_checkout_buttons %}
+        <div class="additional-checkout-buttons">
+          {{ content_for_additional_checkout_buttons }}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="continue-shopping show--small right">
+        {{ arrow-left }}
+      </div>
+    </div>
+
+  </div> <!-- .row -->
+  </form>
+
+
+  {% else %}
+
+  <section class="empty-cart row">
+  <div class="columns">
+    <h1>{{ 'cart.empty.cart_feedback' | t }}</h1>
+    <p><a class="button" href="/collections/all">{{ 'cart.empty.cart_button' | t }}</a></p>
+  </div>
+  </section><!-- #empty-cart -->
+
+  {% endif %} <!-- if cart.item_count > 0  -->
+
+
+</div> <!-- .cart -->
+
+{% schema %}
+{
+  "name": "Cart page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "cart-notes-show",
+      "label": "Enable order notes",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

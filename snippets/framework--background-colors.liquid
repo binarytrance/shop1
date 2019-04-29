@@ -1,0 +1,11 @@
+{% assign bg_color = 'set with include' %}
+{% case bg_color %}
+  {% when 'none' %}
+    {% assign bg_color = false %}
+  {% when 'light' %}
+    {% assign bg_color = '#f7f7f7' %}
+  {% when 'dark' %}
+    {% assign bg_color = '#333333' %}
+  {% when 'accent' %}
+    {% assign bg_color = settings.color--accent %}
+{% endcase %}

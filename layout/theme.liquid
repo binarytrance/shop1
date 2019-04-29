@@ -1,0 +1,183 @@
+<!doctype html>
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+
+<head>
+
+  <!-- Blockshop Theme - Version 5.3.1 by Troop Themes - http://troopthemes.com/ -->
+
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+  {% if settings.favicon != blank %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {% endif %}
+
+  {% if template == 'index' %}
+    <title>{{ page_title }}</title>
+  {% elsif template == 'password' %}
+    <title>{{ shop.name }}</title>
+  {% else %}
+    <title>{{ page_title }} | {{ shop.name }}</title>
+  {% endif %}
+
+  {% if page_description %}
+  <meta name="description" content="{{ page_description }}" />
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}" />
+
+  {% include 'snippet-fb-open-graph-tags' %}
+
+  {{ content_for_header }}
+
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+  {% include 'custom-styles' %}
+
+  <!--[if IE]>
+    <style>
+      .main-header .currency-selector select {
+        width: 80px;
+        padding-right: 10px;
+      }
+    </style>
+  <![endif]-->
+
+  <!-- >= IE 11 -->
+  <style>
+    @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+      .main-header .currency-selector select {
+        width: 80px;
+        padding-right: 10px;
+      }
+    }
+  </style>
+
+  <script type="text/javascript">
+    window.lazySizesConfig = window.lazySizesConfig || {};
+    window.lazySizesConfig.expand = 1200;
+    window.lazySizesConfig.loadMode = 3;
+    window.lazySizesConfig.ricTimeout = 50;
+  </script>
+  {{ 'lazysizes.min.js' | asset_url | script_tag }}
+
+  {{ '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js' | script_tag }}
+  {{ '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js' | script_tag }}
+  {{ 'api.jquery.js' | shopify_asset_url | script_tag }}
+  {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+
+  {% if template contains 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+    {{ 'customer_area.js'  | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  <script>
+    var general_external_links_enabled = true,
+    general_scroll_to_active_item = true,
+    shop_url = '{{ shop.url }}',
+    shop_money_format = '{{ shop.money_with_currency_format }}',
+    currency_switcher_enabled = {{ settings.show_multiple_currencies }},
+    popup_config = {
+      enabled               : {{ settings.popup--enabled }},
+      test_mode             : {{ settings.popup--test-mode }},
+      newsletter_enabled    : {{ settings.popup--newsletter--enabled }},
+      social_icons_enabled  : {{ settings.popup--social-icons--enabled }},
+      show_image_enabled    : '{{ settings.popup--image.size }}',
+      image_link            : "{{ settings.popup--image-url }}",
+      seconds_until         : {{ settings.popup--seconds-range }},
+
+      {% comment %} So it doesnt get picked up by og:image {% endcomment %}
+      {% if settings.popup--image %}
+      show_image_url        : '{{ settings.popup--image | img_url: "1200x" | img_tag: settings.popup--image.alt | default: "" }}',
+      {% endif %}
+
+      page_content          : '{{ settings.popup--page-content }}',
+      days_until            : '{{ settings.popup--days-range }}',
+      storage_key           : 'troop_popup_storage'
+    };
+
+    popup_config.show_image_enabled = popup_config.show_image_enabled > 0 ?
+                                      true :
+                                      false;
+
+    // newer naming convention
+    var theme = {};
+    theme.settings = {};
+    theme.translation = {}; // refactor to pluralised
+    theme.translations = {};
+    theme.classes = {};
+    theme.utils = {};
+    theme.templates = {};
+    theme.partials = {};
+    theme.shop_currency = '{{ shop.currency }}';
+
+    theme.translation.newsletter_email_blank = '{{ "layout.footer.newsletter_email_blank" | t }}';
+    theme.translations.general_search_see_all_results = '{{ "general.search.see_all_results" | t }}';
+    theme.translations.cart_item = '{{ "products.recently_added_popup.item" | t }}';
+    theme.translations.cart_items = '{{ "products.recently_added_popup.items" | t }}';
+
+    theme.preload_image = '{{ "popup.jpg" | asset_url }}';
+
+    {% unless settings.show_multiple_currencies %}
+      Shopify.money_format = "{{ shop.money_format }}";
+      Shopify.money_with_currency_format = "{{ shop.money_with_currency_format }}";
+    {% endunless %}
+
+  </script>
+
+
+  {% include 'snippet-currencies' %}
+
+  {{ 'theme.min.js' | asset_url | script_tag }}
+
+
+      {{ 'paymentfont.scss.css' | asset_url | stylesheet_tag }}
+    
+</head>
+
+<body class="page-{{ page_title | handle }} {% if customer %}customer-logged-in {% endif %}template-{{ template | split: '.' | first | remove: '/' | remove: '_' }}">
+  {% include 'icon-sprite.svg' %}
+
+  <div
+    class="off-canvas--viewport"
+    data-js-class="FrameworkOffCanvas"
+    data-off-canvas--state="closed"
+  >
+    <div class="off-canvas--overlay"></div>
+    <div class="off-canvas--close">{% include 'framework--icon', icon: 'cross' %}</div>
+
+    <div class="off-canvas--left-sidebar">
+      {% include 'partial--mobile-nav' %}
+    </div>
+
+    <div class="off-canvas--main-content">
+      {% section 'header' %}
+
+      <section class="main-content">
+        {{ content_for_layout }}
+      </section>
+
+      {% section 'footer' %}
+
+      {% unless template contains 'password' %}
+        <button class="popup-modal-close">&#x2715;</button>
+        <div class="popup-modal-mask"></div>
+      {% endunless %}
+
+      <!--<style> iframe#admin_bar_iframe { display: none !important; } </style>-->
+    </div>
+
+    {% comment %} <div class="off-canvas--right-sidebar">
+      <div class="off-canvas--close">{% include 'framework--icon', icon: 'cross' %}</div>
+    </div> {% endcomment %}
+
+    {% include 'framework--feedback-bar' %}
+
+    {% include 'partial--popup' %}
+
+  </div>
+  <script async type="text/javascript" src="//static.klaviyo.com/onsite/js/klaviyo.js?company_id=KCriEG"></script>
+  
+<!-- Delete the Beeketing script below after uninstalling Happy Messenger app to remove it from your theme. For more info, read here: https://bit.ly/hmesscode or contact us at hi@beeketing.com. --><!-- BEEKETINGSCRIPT CODE START -->{% include 'bk-tracking' %}<!-- BEEKETINGSCRIPT CODE END -->
+</body>
+</html>

@@ -1,0 +1,209 @@
+{%- assign block_count = section.blocks.size -%}
+
+{% if block_count > 0 %}
+  {%- assign column_count = 12 | divided_by: block_count -%}
+{% endif %}
+
+<footer
+  class="main-footer footer"
+  data-js-class="Footer"
+  data-section-id="{{ section.id }}"
+  data-section-type="footer"
+>
+  <div class="row bottom">
+
+    {% for block in section.blocks limit: block_count %}
+      <div class="large-{{ column_count }} columns {{ block.type }}">
+
+        {% case block.type %}
+          {% when 'about' %}
+
+            <h2 class="title">{{ block.settings.about-title | escape }}</h2>
+            <div class="content">
+              {% if block.settings.text != blank %}
+                <div class="text">{{ block.settings.text }}</div>
+              {% endif %}
+
+              {% assign powered_check = powered_by_link | split: '>' %}
+              {% if powered_check[1] != ' </a' %}
+                <div class="powered-by">
+                  
+                </div>
+              {% endif %}
+
+              {% unless shop.enabled_payment_types == empty %}
+                {% if block.settings.footer-payment-options-show %}
+                  {% include 'framework--payment-icons' %}
+                {% endif %}
+              {% endunless %}
+
+            </div>
+          {% when 'menu' %}
+
+            <h2 class="title">{{ block.settings.menu-title | escape }}</h2>
+
+            <div class="content">
+              {% if linklists[block.settings.menu].links.size > 0 %}
+                {% assign footer_nav = block.settings.menu %}
+
+                <ul class="footer-nav plain-list" role="navigation" aria-label="Secondary">
+                  {% for link in linklists[footer_nav].links %}
+                    <li>
+                      <a href="{{ link.url }}" title="{{ link.title }}">
+                        {{ link.title }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+          {% when 'subscribe' %}
+
+            {% assign show_social = false %}
+            {% if settings.footer-facebook-follow-url.size > 0 or
+                  settings.footer-twitter-follow-url.size > 0  or
+                  settings.footer-instagram-follow-url.size > 0 or
+                  settings.footer-pinterest-follow-url.size > 0 or
+                  settings.footer-tumblr-follow-url.size > 0 or
+                  settings.footer-vimeo-follow-url.size > 0 or
+                  settings.footer-youtube-follow-url.size > 0 or
+                  settings.footer-google-plus-follow-url.size > 0 %}
+              {% assign show_social = true %}
+            {% endif %}
+
+            {% if block.settings.subscribe--show-social-icons == false %}
+              {% assign show_social = false %}
+            {% endif %}
+
+            {% if block.settings.subscribe--show-newsletter or show_social %}
+              {% assign newsletter_title = 'layout.footer.newsletter_title' | t %}
+              {% if newsletter_title.size > 0 %}
+                <h2 class="title">{{ newsletter_title }}</h2>
+              {% endif %}
+            {% endif %}
+
+            <div class="content">
+              {% if block.settings.subscribe--show-newsletter or settings.popup--newsletter--enabled %}
+                <div id="mailing-list-module" {% if block.settings.subscribe--show-newsletter == false and settings.popup--newsletter--enabled %}style="display:none;"{% endif %}>
+                  {% if block.settings.newsletter--heading != blank %}
+                    <div class="footer--newsletter--heading rte-content">{{ block.settings.newsletter--heading }}</div>
+                  {% endif %}
+
+                  {% form 'customer' %}
+                    {% if form.errors %}
+                      <p class="error feedback">
+                        {% for field in form.errors %}
+                          {{ field }} {{ form.errors.messages[field] }}
+                        {% endfor %}
+                      </p>
+                    {% endif %}
+
+                    <input type="hidden" id="contact_tags" name="contact[tags]" value="newsletter" />
+                    <input type="hidden" id="newsletter-first-name" name="contact[first_name]" value="Subscriber" />
+                    <input type="hidden" id="newsletter-last-name" name="contact[last_name]" value="Newsletter" />
+                    <input class="small" type="email" placeholder="{{ 'layout.footer.newsletter_placeholder' | t }}" name="contact[email]" />
+                    <input type="submit" class="button prefix" value="{{ 'layout.footer.newsletter_button' | t }}" name="subscribe" id="email-submit" />
+
+                    {% if form.posted_successfully? or form.errors %}
+                      <script>window.location.hash = '#feedback-bar--newsletter';</script>
+                    {% endif %}
+                  {% endform %}
+                </div> <!-- #mailing-list-module -->
+              {% endif %}
+
+              {% if show_social %}
+                <div class="social-follow">
+                  {% include 'snippet-social-follow' %}
+                </div>
+              {% endif %}
+            </div> <!-- .content -->
+
+        {% endcase %}
+
+      </div> <!-- .columns -->
+    {% endfor %}
+  </div> <!-- .row.bottom -->
+
+  {% if section.blocks.size == 0 %}
+    {% include 'snippet-no-blocks' %}
+  {% endif %}
+
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section--footer",
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "about",
+      "name": "About store",
+      "settings": [
+        {
+          "type": "text",
+          "id": "about-title",
+          "label": "Title",
+          "default": "Store"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>© Your brand name here<p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "footer-payment-options-show",
+          "label": "Enable payment logos",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu-title",
+          "label": "Title",
+          "default": "Info"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "footer",
+          "info": "This menu won't show submenu items."
+        }
+      ]
+    },
+    {
+      "type": "subscribe",
+      "name": "Subscribe",
+      "settings": [
+        {
+          "id": "newsletter--heading",
+          "label": "Newsletter heading",
+          "type": "richtext",
+          "default": "<p>Sign up to our mailing list</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "subscribe--show-newsletter",
+          "label": "Show newsletter",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "subscribe--show-social-icons",
+          "label": "Show social icons",
+          "default": true
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

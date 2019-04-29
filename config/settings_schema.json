@@ -1,0 +1,425 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Blockshop",
+    "theme_author": "Troop Themes",
+    "theme_version": "5.3.1",
+    "theme_documentation_url": "http:\/\/support.troopthemes.com",
+    "theme_support_url": "http:\/\/support.troopthemes.com\/"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "id": "color--accent",
+        "label": "Accent color",
+        "type": "color",
+        "default": "#fff4cc"
+      },
+      {
+        "type": "color",
+        "id": "color-text",
+        "label": "Text",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color--alternative",
+        "label": "Alternative text",
+        "default": "#ffffff",
+        "info": "Useful for text over dark backgrounds"
+      },
+      {
+        "type": "color",
+        "id": "color-page-bg",
+        "label": "Page background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color-panel-bg",
+        "label": "Panel background",
+        "default": "#fafafa"
+      },
+      {
+        "type": "color",
+        "id": "color-border",
+        "label": "Borders",
+        "default": "#ebebeb"
+      },
+      {
+        "type": "color",
+        "id": "color-error",
+        "label": "Important",
+        "default": "#f25a1d"
+      },
+      {
+        "type": "color",
+        "id": "color-button",
+        "label": "Button, announcement bar text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color-button-bg",
+        "label": "Button, announcement bar background",
+        "default": "#444444"
+      },
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "label": "Background",
+        "type": "color",
+        "id": "color-header-bg",
+        "default": "#444444"
+      },
+      {
+        "label": "Text",
+        "type": "color",
+        "id": "color-header",
+        "default": "#444444"
+      },
+      {
+        "label": "Cart link",
+        "type": "color",
+        "id": "color-header-cart",
+        "default": "#444444"
+      },
+      {
+        "type": "header",
+        "content": "Footer"
+      },
+      {
+        "label": "Background",
+        "type": "color",
+        "id": "color-footer-bg",
+        "default": "#bbbbbb"
+      },
+      {
+        "label": "Text",
+        "type": "color",
+        "id": "color-footer",
+        "default": "#333333"
+      },
+      {
+        "type": "header",
+        "content": "Home page - slideshow"
+      },
+      {
+        "label": "Text",
+        "type": "color",
+        "id": "color-slider-caption",
+        "default": "#f7f7f7"
+      },
+      {
+        "label": "Background",
+        "type": "color",
+        "id": "color-slider-caption-bg",
+        "default": "#444444"
+      },
+      {
+        "label": "Button text",
+        "type": "color",
+        "id": "color-slider-button",
+        "default": "#f7f7f7"
+      },
+      {
+        "label": "Button background",
+        "type": "color",
+        "id": "color-slider-button-bg",
+        "default": "#444444"
+      },
+      {
+        "label": "Button background hover",
+        "type": "color",
+        "id": "color-slider-button-hover-bg",
+        "default": "#999"
+      },
+      {
+        "label": "Navigation dots",
+        "type": "color",
+        "id": "color-slider-nav",
+        "default": "#f7f7f7"
+      },
+      {
+        "type": "header",
+        "content": "Product grid"
+      },
+      {
+        "label": "Sale text",
+        "type": "color",
+        "id": "color-grid-sale",
+        "default": "#f7f7f7"
+      },
+      {
+        "label": "Sale background",
+        "type": "color",
+        "id": "color-grid-sale-bg",
+        "default": "#444444"
+      },
+      {
+        "label": "Sold out text",
+        "type": "color",
+        "id": "color-grid-sold-out",
+        "default": "#ffffff"
+      },
+      {
+        "label": "Sold out background",
+        "type": "color",
+        "id": "color-grid-sold-out-bg",
+        "default": "#cccccc"
+      },
+      {
+        "type": "header",
+        "content": "Other"
+      },
+      {
+        "label": "Tabs and accordion headers",
+        "type": "color",
+        "id": "color-tabs-accordions",
+        "default": "#ebebeb"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "id": "typography--logo",
+        "label": "Logo",
+        "type": "font_picker",
+        "default": "alegreya_n7"
+      },
+      {
+        "id": "typography--heading",
+        "label": "Heading",
+        "type": "font_picker",
+        "default": "karla_n7"
+      },
+      {
+        "id": "typography--accent",
+        "label": "Accent",
+        "type": "font_picker",
+        "default": "karla_n4",
+        "info": "Navigation, buttons, small headings"
+      },
+      {
+        "id": "typography--text",
+        "label": "Text",
+        "type": "font_picker",
+        "default": "lato_n4"
+      }
+    ]
+  },
+  {
+    "name": "Product grid",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "hover-image-enabled",
+        "label": "Enable hover image",
+        "default": false,
+        "info": "This will use its second image. You can reorder images in the product's admin page."
+      },
+      {
+        "type": "checkbox",
+        "id": "brand-show",
+        "label": "Show vendor name",
+        "default": false,
+        "info": "e.g. Apple, Shopify"
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "search-products-only",
+        "label": "Search - display products only"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "footer-facebook-follow-url",
+        "label": "Facebook",
+        "info": "https:\/\/www.facebook.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-twitter-follow-url",
+        "label": "Twitter",
+        "info": "https:\/\/twitter.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-instagram-follow-url",
+        "label": "Instagram",
+        "info": "https:\/\/instagram.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-vimeo-follow-url",
+        "label": "Vimeo",
+        "info": "https:\/\/vimeo.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-pinterest-follow-url",
+        "label": "Pinterest",
+        "info": "https:\/\/www.pinterest.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-youtube-follow-url",
+        "label": "Youtube",
+        "info": "https:\/\/www.youtube.com\/user\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "footer-tumblr-follow-url",
+        "label": "Tumblr",
+        "info": "http:\/\/shopify.tumblr.com"
+      },
+      {
+        "type": "text",
+        "id": "footer-google-plus-follow-url",
+        "label": "Google plus",
+        "info": "https:\/\/plus.google.com\/+shopify"
+      }
+    ]
+  },
+  {
+    "name": "Popup",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "popup--enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "label": "Test mode",
+        "type": "checkbox",
+        "id": "popup--test-mode",
+        "default": false,
+        "info": "Enable to view popup on each page load"
+      },
+      {
+        "type": "image_picker",
+        "id": "popup--image",
+        "label": "Image",
+        "info": "Recommended 600px wide and 1200px wide when only showing image"
+      },
+      {
+        "type": "url",
+        "id": "popup--image-url",
+        "label": "Link to"
+      },
+      {
+        "type": "page",
+        "id": "popup--page-content",
+        "label": "Page content"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup--newsletter--enabled",
+        "label": "Show newsletter form",
+        "default": true
+      },
+      {
+        "type": "richtext",
+        "id": "popup--newsletter--heading",
+        "label": "Show newsletter form",
+        "default": "<p>Sign up to our mailing list<\/p>"
+      },
+      {
+        "type": "checkbox",
+        "id": "popup--social-icons--enabled",
+        "label": "Show social icons",
+        "default": true
+      },
+      {
+        "label": "Show in (seconds)",
+        "id": "popup--seconds-range",
+        "type": "range",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "label": "Show again after (days)",
+        "id": "popup--days-range",
+        "type": "range",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "default": 7,
+        "info": "Independent to each browser and device"
+      }
+    ]
+  },
+  {
+    "name": "Currency",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "To offer multiple currencies on your online store, you must first [edit your store's currency formatting](https:\/\/docs.shopify.com\/support\/settings\/general\/tell-my-script-where-to-find-money-formats)."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_multiple_currencies",
+        "label": "Enable currency conversion",
+        "default": true,
+        "info": "Even though prices are displayed in different currencies, orders will still be processed in your store's currency."
+      },
+      {
+        "type": "select",
+        "id": "currency_format",
+        "label": "Format",
+        "options": [
+          {
+            "value": "money_format",
+            "label": "Without currency ($10.00)"
+          },
+          {
+            "value": "money_with_currency_format",
+            "label": "With currency ($10.00 CAD)"
+          }
+        ],
+        "default": "money_with_currency_format"
+      },
+      {
+        "type": "text",
+        "id": "supported_currencies",
+        "label": "Supported currencies",
+        "default": "INR GBP CAD USD AUD EUR JPY",
+        "info": "Use the country's ISO [currency code](http:\/\/www.xe.com\/iso4217.php). Separate your currency codes with a space."
+      },
+      {
+        "type": "text",
+        "id": "default_currency",
+        "label": "Default currency",
+        "default": "USD"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32 x 32px"
+      }
+    ]
+  }
+]

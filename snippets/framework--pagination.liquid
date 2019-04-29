@@ -1,0 +1,30 @@
+{% assign view = framework--pagination %}
+{% assign hash = '' %}
+{% if view == 'blog-comments' %}
+  {% assign hash = '#comments'  %}
+{% endif %}
+
+<div class="fw--pagination list spacing--3y spacing--5x">
+
+  <div class="container">
+  {% if paginate.previous %}
+    <div class="arrow left">
+      <a class="text-colored" href="{{ paginate.previous.url }}{{ hash }}">
+        {% include 'snippet-symbol' with 'arrow-left' %}
+        {{ 'general.pagination.previous' | t }}
+      </a>
+    </div>
+  {% endif %}
+
+  <span class="current-page">{{ 'general.pagination.page' | t }} {{ paginate.current_page }} {{ 'general.pagination.of' | t }} {{ paginate.pages }}</span>
+
+  {% if paginate.next %}
+    <div class="arrow right">
+      <a class="text-colored" href="{{ paginate.next.url }}{{ hash }}">
+        {{ 'general.pagination.next' | t }}
+        {% include 'snippet-symbol' with 'arrow-right' %}
+      </a>
+    </div>
+  {% endif %}
+    </div>
+</div>

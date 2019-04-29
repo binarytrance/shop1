@@ -1,0 +1,136 @@
+{% comment %} Attributes {% endcomment %}
+{% assign onboarding = false %}
+{% assign view = '' %}
+
+{% comment %} Settings {% endcomment %}
+{% assign show_vendor = settings.brand-show %}
+{% assign hover_image_enabled = settings.hover-image-enabled %}
+
+{% comment %} Translations {% endcomment %}
+{% assign sold_out_t = 'collections.sold_out_html' | t %}
+{% assign sale_t = 'collections.sale' | t %}
+{% assign from_t = 'collections.from' | t %}
+
+{% comment %} Variables {% endcomment %}
+{% assign available = product.available %}
+{% assign url = product.url | within: collection %}
+{% assign title = product.title %}
+{% assign vendor = product.vendor %}
+{% assign vendor_url = product.vendor | url_for_vendor %}
+{% assign price = product.price | money %}
+{% assign price_varies = product.price_varies %}
+
+{% if product.compare_at_price > product.price and product.available %}
+  {% assign compare_price = product.compare_at_price | money %}
+{% else %}
+  {% assign compare_price = false %}
+{% endif %}
+
+{% assign image_preload = false %}
+{% if view == 'product-slider' %}
+  {% assign image_preload = true %}
+{% endif %}
+
+{% capture image %}
+  {%
+    include 'framework--image',
+    image: product.featured_image,
+    preload: image_preload
+  %}
+{% endcapture %}
+
+{% if product.images.size > 1 %}
+  {% capture hover_image %}
+    {%
+      include 'framework--image',
+      image: product.images[1],
+      preload: true
+    %}
+  {% endcapture %}
+{% else %}
+  {% assign hover_image = false %}
+{% endif %}
+
+
+{% comment %} Onboarding {% endcomment %}
+{% if onboarding %}
+  {% assign available = true %}
+  {% assign url = product.url | within: collection %}
+  {% assign title = 'home.onboarding.product_title' | t %}
+  {% assign vendor = 'home.onboarding.vendor' | t %}
+  {% assign price = 'home.onboarding.price' | t %}
+
+  {% capture image %}
+    {%
+      include "framework--placeholder",
+      type: "product",
+      aspect_ratio: 0.75,
+      placeholder_index: index
+    %}
+  {% endcapture %}
+{% endif %}
+
+{% comment %} View {% endcomment %}
+<article
+  class="product--root"
+  {% if hover_image_enabled and hover_image %}
+    data-hover-image="true"
+  {% endif %}
+>
+
+  {% if available == false %}
+    <a href="{{ url }}">
+      <div class="product--sold-out font--accent"><span>{{ sold_out_t }}</span></div>
+    </a>
+  {% elsif compare_price %}
+    <a href="{{ url }}">
+      <div class="product--sale font--accent" href="{{ product.url | within: collection }}">
+        <span>{{ sale_t }}</span>
+      </div>
+    </a>
+  {% endif %}
+
+  <a href="{{ url }}">
+    <div class="product--image-wrapper">
+      <div class="product--image">{{ image }}</div>
+      {% if hover_image_enabled and hover_image %}
+        <div class="product--hover-image">
+          {{ hover_image }}
+        </div>
+      {% endif %}
+    </div>
+  </a>
+
+  <div class="product--details">
+    <a href="{{ url }}">
+      <div class="product--title">{{ title }}</div>
+    </a>
+
+    {% if show_vendor %}
+      <a href="{{ vendor_url }}">
+        <div class="product--vendor">{{ vendor }}</div>
+      </a>
+    {% endif %}
+
+    <a href="{{ url }}">
+      <div class="product--price-wrapper">
+        {% if compare_price %}
+          <span class="product--compare-price">
+            <span class="money">{{ compare_price }}</span>
+          </span>
+          <span class="product--price">
+            <span class="money">{{ price }}</span>
+          </span>
+        {% else %}
+          {% if price_varies %}
+            <span class="product--from">{{ from_t }}</span>
+          {% endif %}
+          <span class="product--price">
+            <span class="money">{{ price }}</span>
+          </span>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+
+</article>

@@ -1,0 +1,260 @@
+{% capture general_settings %}{{ settings.color--alternative }}{% endcapture %}
+
+{% assign bg_color = section.settings.background-color %}
+{% include 'framework--background-colors', bg_color: bg_color %}
+
+{% assign header_text_exists = true %}
+{% if section.settings.title == blank and section.settings.subtitle == blank %}
+  {% assign header_text_exists = false %}
+{% endif %}
+
+{% assign footer_text_exists = true %}
+{% if section.settings.link-text == blank %}
+  {% assign footer_text_exists = false %}
+{% endif %}
+
+{% assign color_brightness = bg_color | color_brightness %}
+{% assign dark_background = false %}
+{% if color_brightness < 200 %}
+  {% assign dark_background = true %}
+{% endif %}
+
+<div
+  class="featured-grid--root"
+  data-section-id="{{ section.id }}"
+  data-js-class="FrameworkFeaturedGrid"
+  data-dark-background="{{ dark_background }}"
+  data-full-width="{{ section.settings.full-width }}"
+  data-mobile-width="{{ section.settings.mobile-width }}"
+  data-alternative-color="{{ section.settings.alternative-color }}"
+  data-header-text-exists="{{ header_text_exists }}"
+  data-footer-text-exists="{{ footer_text_exists }}"
+  data-text-position="{{ section.settings.text-position }}"
+  data-spacing="{{ section.settings.spacing }}"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+
+  {% if header_text_exists %}
+    <div class="featured-grid--header">
+      {% if section.settings.title != blank %}
+        <h2 class="featured-grid--title">{{ section.settings.title | escape }}</h2>
+      {% endif %}
+
+      {% if section.settings.subtitle != blank %}
+        <h3 class="featured-grid--subtitle">{{ section.settings.subtitle | escape }}</h3>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="featured-grid--body">
+
+    {% for block in section.blocks %}
+      {% assign width = 100.0 | divided_by: section.settings.width %}
+      {% assign link = block.settings.link-url %}
+
+      <div
+        class="featured-grid--item"
+        data-width="{{ width | floor }}"
+        style="width: {{ width }}%;"
+        {{ block.shopify_attributes }}
+      >
+        {% if link != blank %}<a href="{{ link }}">{% endif %}
+        <div class="featured-grid--item--container">
+          {% if block.settings.image %}
+            <div class="featured-grid--item--image">
+              {%
+                include "framework--image",
+                image: block.settings.image,
+                full_width: true
+              %}
+            </div>
+          {% else %}
+            {%
+              include "framework--placeholder",
+              type: "image",
+              aspect_ratio: 1
+            %}
+          {% endif %}
+
+          {% if block.settings.title != blank or block.settings.subtitle != blank %}
+            <div class="featured-grid--item--overlay-background"></div>
+            <div class="featured-grid--item--text">
+              {% if block.settings.title != blank %}
+                <h4 class="featured-grid--item--title">
+                  {{ block.settings.title | escape }}
+                </h4>
+              {% endif %}
+
+              {% if block.settings.subtitle != blank %}
+                <p class="featured-grid--item--subtitle">
+                  {{ block.settings.subtitle | escape }}
+                </p>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          </div>
+        {% if link != blank %}</a>{% endif %}
+      </div>
+
+    {% endfor %}
+  </div>
+
+  {% if footer_text_exists %}
+    <div class="featured-grid--footer">
+      <a class="featured-grid--call-to-action" href="{{ section.settings.link-url }}">
+        {{ section.settings.link-text }}
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+
+{% schema %}
+{
+  "name": "Featured grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout and Color"
+    },
+    {
+      "id": "background-color",
+      "label": "Background color",
+      "type": "select",
+      "options": [
+        { "label": "None", "value": "none" },
+        { "label": "Light grey", "value": "light" },
+        { "label": "Dark", "value": "dark" },
+        { "label": "Accent", "value": "accent" }
+      ],
+      "default": "light"
+    },
+    {
+      "id": "full-width",
+      "label": "Full width",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "spacing",
+      "label": "Show spacing between blocks",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "alternative-color",
+      "label": "Use alternative text color",
+      "type": "checkbox",
+      "default": false,
+      "info": "This can found under theme settings below."
+    },
+    {
+      "id": "text-position",
+      "label": "Text Position",
+      "type": "radio",
+      "options": [
+        { "value": "center", "label": "Over image" },
+        { "value": "bottom", "label": "Below image"}
+      ],
+      "default": "center"
+    },
+    {
+      "id": "width",
+      "label": "Blocks per row",
+      "type": "range",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "id": "mobile-width",
+      "label": "Blocks per row for small devices",
+      "type": "radio",
+      "options": [
+        { "value": "1", "label": "1"},
+        { "value": "2", "label": "2"}
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured grid"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "url",
+      "id": "link-url",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "link-text",
+      "label": "Link text"
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image with optional text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Grid image"
+        },
+        {
+          "type": "textarea",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "View more"
+        },
+        {
+          "type": "url",
+          "id": "link-url",
+          "label": "Link to"
+        }
+      ]
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Featured grid",
+      "category": "Image",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

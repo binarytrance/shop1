@@ -1,0 +1,127 @@
+{% paginate search.results by 24 %}
+<div class="row">
+  <div class="large-12 columns">
+    <h1 class="page-title">{{ 'general.search.page_title' | t }}</h1>
+  </div>
+</div>
+
+<div class="row">
+  <div class="columns">
+    <div class="divider"></div>
+  </div>
+</div>
+<div class="row summary narrow">
+  {% if search.terms != "" %}
+  <div class="large-4 columns">
+    {% capture search_terms %}<strong>"{{ search.terms }}"</strong>{% endcapture %}
+    <p>{{ 'general.search.results_title_html' | t: search_terms: search_terms }}</p>
+  </div>
+  {% endif %}
+
+  <div class="large-4 columns">
+    <div class="searchbar-container">
+      <form  action="/search" method="get" role="search">
+        {% if settings.search-products-only %}<input type="hidden" name="type" value="product" />{% endif %}
+        <input name="q" type="text" placeholder="{{ 'general.search.placeholder' | t }}" class="hint text small" value="{{ search.terms }}" />
+        <button class="search">
+          {% include 'snippet-symbol' with 'search' %}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  {% if search.terms != "" %}
+  <div class="large-3 columns">
+    {% capture search_results_size %}<strong>{{ search.results.size }}</strong>{% endcapture %}
+    <p>{{ 'general.search.results_size_html' | t: search_results_size: search_results_size }}</p>
+  </div>
+  {% endif %}
+</div>
+<div class="row">
+  <div class="columns">
+    <div class="divider results"></div>
+  </div>
+</div>
+
+{% if search.results != empty %}
+
+  <!-- Begin results -->
+  {% if settings.search-products-only %}
+    <section class="row">
+      <div
+        class="product-grid--root"
+        data-items-per-row="4"
+        data-mobile-items-per-row="2"
+        data-js-class="ProductGrid"
+      >
+        {% for product in search.results %}
+          {% include 'partial--product' %}
+        {% endfor %}
+      </div>
+    </section>
+  {% else %}
+  {% comment %} mixed results {% endcomment %}
+    {% for item in search.results %}
+      <div class="row results narrow">
+        <div class="large-3 columns text-center">
+          {% if item.object_type == 'article' %}
+            <div class="thumbnail">
+              {% if item.image %}
+                <a href="{{ item.url }}" title="{{ item.title | escape }}">
+                  {%
+                    include "framework--image",
+                    image: item.image
+                  %}
+                </a>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="thumbnail">
+              {% if item.featured_image.size > 0 %}
+              <a href="{{ item.url }}">
+                {%
+                  include "framework--image",
+                  image: item.featured_image
+                %}
+              </a>
+              {% endif %}
+            </div>
+          {% endif %}
+
+        </div>
+        <div class="large-8 columns">
+          <div class="search-result">
+            <h3>{{ item.title | highlight: search.terms | link_to: item.url }}</h3>
+            {{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="columns">
+          <div class="divider results"></div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+<!-- End results -->
+{% endif %}
+
+<div class="row">
+  <div class="right columns large-6">
+    {% include 'snippet-pagination' %}
+  </div>
+</div>
+
+{% endpaginate %}
+
+<script>
+  (function($) {
+    var field = 'smallscreen=true',
+        url = window.location.href;
+
+    if ( (~ url.indexOf('?' + field)) || (~ url.indexOf('&' + field)) ) {
+      $('input[name=q]').focus();
+    }
+  })(jQuery);
+</script>

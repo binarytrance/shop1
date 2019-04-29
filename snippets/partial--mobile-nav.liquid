@@ -1,0 +1,36 @@
+<div class="mobile-nav--search">
+  {% include 'framework--search', view: "sidebar" %}
+</div>
+
+<div class="mobile-nav--menu font--accent">
+
+</div>
+
+{% if shop.customer_accounts_enabled %}
+  <div class="mobile-nav--login font--accent">
+    {% if customer %}
+      {% assign view_account_link = 'layout.header.account_view_link' | t %}
+      {% capture view_account_link %}<a href="/account">{{ view_account_link }}</a>{% endcapture %}
+      {{ view_account_link }}
+    {% else %}
+      {% assign login_link = 'layout.header.account_view_link' | t %}
+      {% assign login_link = login_link | customer_login_link %}
+
+      {% if shop.customer_accounts_optional %}
+        {{ login_link }}
+      {% else %}
+        {{ login_link }}
+      {% endif %}
+    {% endif %}
+  </div>
+{% endif %}
+
+{% if settings.show_multiple_currencies %}
+  <div class="mobile-nav--currency">
+    <div class="currency-selector mobile">
+      <div class="container">
+        {% include 'snippet-currency-selector' %}
+      </div>
+    </div>
+  </div>
+{% endif %}

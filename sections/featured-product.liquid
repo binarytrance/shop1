@@ -1,0 +1,186 @@
+{% comment %} Translations {% endcomment %}
+{% assign more_info_t = 'home.featured_product.more_info' | t %}
+{% assign price_was_t = 'home.featured_product.was' | t %}
+{% assign title_t = 'home.onboarding.product_title' | t %}
+{% assign vendor_t = 'home.onboarding.vendor' | t %}
+{% assign price_t = 'home.onboarding.price' | t %}
+
+{% comment %} Variables {% endcomment %}
+{% include 'framework--background-colors', bg_color: section.settings.background-color %}
+{% assign heading = section.settings.heading %}
+{% assign product = all_products[section.settings.featured_product] %}
+{% assign variant = product.selected_or_first_available_variant %}
+{% assign link = product.url %}
+{% assign title = product.title %}
+{% assign caption = section.settings.caption %}
+{% capture image %}
+  {%
+    include "framework--image",
+    image: product.featured_image
+  %}
+{% endcapture %}
+{% assign show_vendor = section.settings.show_vendor %}
+{% assign vendor = product.vendor %}
+{% capture price %}
+  <span class="featured-product--actual-price">{{ variant.price | money }}</span>&nbsp;
+  <span class="featured-product--compare-price">
+    {% if variant.price < variant.compare_at_price %}
+      {{ price_was_t }} {{ variant.compare_at_price | money }}
+    {% endif %}
+  </span>
+{% endcapture %}
+
+{% if section.settings.show_social %}
+  {% capture social %}
+    {% include 'snippet-product-share' with 'product-template' %}
+  {% endcapture %}
+{% endif %}
+
+{% comment %} Onboarding {% endcomment %}
+{% if product == empty %}
+  {% assign title = title_t %}
+  {% assign vendor = vendor_t %}
+  {% capture price %}
+    <span class="featured-product--actual-price">{{ price_t }}</span>
+  {% endcapture %}
+  {% capture image %}
+    {%
+      include "framework--placeholder",
+      type: "product",
+      aspect_ratio: 0.75,
+      placeholder_index: 1
+    %}
+  {% endcapture %}
+{% endif %}
+
+{% comment %} View {% endcomment %}
+<div
+  class="featured-product--root"
+  data-section-id="{{ section.id }}"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+  <div class="featured-product--container">
+    {% if heading != blank %}
+      <div class="featured-product--header">
+        <h2 class="featured-product--heading">{{ heading }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="featured-product--body">
+      <a class="featured-product--image" href="{{ link }}">
+        {{ image }}
+      </a>
+      <div class="featured-product--info">
+        <h2 class="featured-product--title">{{ title }}</h2>
+        {% if show_vendor %}
+          <div class="featured-product--vendor">{{ vendor }}</div>
+        {% endif %}
+        {% if caption != blank %}
+          <div class="featured-product--caption">{{ caption }}</div>
+        {% endif %}
+
+        <div class="featured-product--price">{{ price }}</div>
+        <div class="featured-product--more-info">
+          <a class="button" href="{{ link }}">{{ more_info_t }}</a>
+        </div>
+
+        {% if social != blank %}
+          <div class="featured-product--social">
+            <div class="social-share">
+              {{ social }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+  {
+    "name": "Featured product",
+    "settings": [
+      {
+        "id": "background-color",
+        "label": "Background color",
+        "type": "select",
+        "options": [
+          { "label": "None", "value": "none" },
+          { "label": "Light grey", "value": "light" },
+          { "label": "Accent", "value": "accent" }
+        ],
+        "default": "none"
+      },
+      {
+        "id": "heading",
+        "label": "Heading",
+        "type": "text"
+      },
+      {
+        "id": "caption",
+        "label": "Product caption",
+        "type": "richtext",
+        "default": "<p>Add an optional caption here</p>"
+      },
+      {
+        "type": "product",
+        "id": "featured_product",
+        "label": "Product"
+      },
+      {
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "type": "checkbox",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Social media panel"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_social",
+        "label": "Show",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product-share-twitter",
+        "label": "Share on Twitter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product-share-facebook",
+        "label": "Share on Facebook",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product-share-pinterest",
+        "label": "Share on Pinterest",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product-share-tumblr",
+        "label": "Share on Tumblr",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product-share-google",
+        "label": "Share on Google Plus",
+        "default": false
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured product",
+        "category": "Product"
+      }
+    ]
+  }
+{% endschema %}
+

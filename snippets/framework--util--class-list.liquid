@@ -1,0 +1,11 @@
+{% assign classes = framework--util--class-list %}
+{% assign classes = classes | strip_newlines %}
+{% assign classes = classes | split: ' ' %}
+{% assign class_list = '' %}
+
+{% for class in classes %}
+  {% if class != ' ' %}
+    {% assign class_list = class_list | append: class | append: " " %}
+  {% endif %}
+{% endfor %}
+{% assign class_list = class_list | strip %}

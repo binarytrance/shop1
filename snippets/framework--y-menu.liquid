@@ -1,0 +1,114 @@
+{% assign js_class = 'FrameworkYMenu' %}
+{% assign overlap_parent = 0 %}
+{% assign handle = 'main-menu' %}
+
+<nav
+  class="y-menu"
+  data-js-class="{{ js_class }}"
+>
+  <ul class="y-menu--level-1--container">
+
+    {% comment %} Level 1 {% endcomment %}
+    {% for link in linklists[handle].links %}
+
+      <li
+        class="y-menu--level-1--link"
+        data-y-menu--depth="{{ link.levels | plus: 1 }}"
+        data-y-menu--open="false"
+      >
+
+        {% if link.links != blank %}
+          <a
+            href="{{ link.url }}"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="y-menu--sub-{{ link.handle }}"
+          >
+            {{ link.title }}
+            {% include 'framework--icon', icon: 'chevron-right' %}
+          </a>
+        {% else %}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {% endif %}
+
+          {% comment %} Level 2 {% endcomment %}
+          {% if link.links != blank %}
+            {% assign parent_link = true %}
+            {% if link.url == '#' or link.url == '/#' %}{% assign parent_link = false %}{% endif %}
+
+            <ul
+              class="y-menu--level-2--container"
+              {% if parent_link %}
+                data-y-menu--parent-link="level-2"
+              {% endif %}
+              id="y-menu--sub-{{ link.handle }}"
+            >
+
+              <li class="y-menu--back-link"><a href="#">
+                {% include 'framework--icon', icon: 'chevron-left' %} {{ 'layout.header.back' | t }}
+              </a></li>
+
+              {% if parent_link %}
+                <li class="y-menu--parent-link"><a href="{{ link.url }}">
+                  {{ link.title }}
+                </a></li>
+              {% endif %}
+
+              {% assign list = link.handle %}
+              {% for link in linklists[list].links %}
+
+                <li class="y-menu--level-2--link">
+                  <a href="{{ link.url }}">
+                    {{ link.title }}
+                    {% if link.links != blank %}
+                      {% include 'framework--icon', icon: 'chevron-right' %}
+                    {% endif %}
+                  </a>
+
+                  {% comment %} Level 3 {% endcomment %}
+                  {% if link.links != blank %}
+                    {% assign parent_link = true %}
+                    {% if link.url == '#' or link.url == '/#' %}
+                      {% assign parent_link = false %}
+                    {% endif %}
+
+                    <ul
+                      class="y-menu--level-3--container"
+                      {% if parent_link %}
+                        data-y-menu--parent-link="level-3"
+                      {% endif %}
+                    >
+                      <li class="y-menu--back-link"><a href="{{ link.url }}">
+                        {% include 'framework--icon', icon: 'chevron-left' %} {{ 'layout.header.back' | t }}
+                      </a></li>
+
+                      {% if parent_link %}
+                        <li class="y-menu--parent-link"><a href="{{ link.url }}">
+                          {{ link.title }}
+                        </a></li>
+                      {% endif %}
+
+                      {% assign list = link.handle %}
+                      {% for link in linklists[list].links %}
+                        <li class="y-menu--level-3--link">
+                          <a href="{{ link.url }}">
+                            {{ link.title }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                  {% comment %} End Level 3 {% endcomment %}
+
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          {% comment %} End Level 2 {% endcomment %}
+
+      </li>
+    {% endfor %}
+  </ul>
+  {% comment %} End level 1 {% endcomment %}
+</nav>
+

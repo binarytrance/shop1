@@ -1,0 +1,98 @@
+<nav role="navigation">
+  <ul class="font-nav">
+
+    {% assign tiers_l1 = "mainmenu" %}
+    {% for link_l1 in linklists[header_nav].links %}
+      <li class="nav-item">
+        <a class="nav-item-link" href="{{ link_l1.url }}">
+          {{ link_l1.title }}
+        </a>
+
+        {% assign tiers_l2 = tiers_l1 | append: '>' | append: link_l1.title | downcase | strip | replace: ' ', '' %}
+        {% for linklist_l2 in linklists %}
+          {% assign linklist_l2_title = linklist_l2.title | downcase | strip | replace: ' ', '' %}
+
+          {% if tiers_l2 == linklist_l2_title %}
+            <ul class="sub-nav catalog">
+              <li class="row">
+                {% for link_l2 in linklist_l2.links %}
+
+                  <div class="sub-nav-item columns">
+                    <a {% if link_l2.url == '#' %}class="disabled"{% endif %} href="{{ link_l2.url }}"><span>{{ link_l2.title }}</span></a>
+
+                    {% assign tiers_l3 = tiers_l2 | append: '>' | append: link_l2.title | downcase | strip | replace: ' ', '' %}
+                    {% for linklist_l3 in linklists %}
+                      {% assign linklist_l3_title = linklist_l3.title | downcase | strip | replace: ' ', '' %}
+                      {% if tiers_l3 == linklist_l3_title %}
+                        <ul>
+                          {% for link_l3 in linklist_l3.links %}
+                            <li>
+                              <a href="{{ link_l3.url }}">
+                                {{ link_l3.title }}
+                              </a>
+
+                            {% comment %} Close level 3 {% endcomment %}
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+
+                {% comment %} Close level 2 {% endcomment %}
+                {% endfor %}
+              </li>
+
+            </ul>
+          {% endif %}
+        {% endfor %}
+
+
+        {% comment %}Compliance with Shopifys https://docs.shopify.com/manual/your-website/navigation/create-drop-down-menu {% endcomment %}
+        {% assign tiers_l2 = link_l1.title | downcase | strip | replace: ' ', '' %}
+        {% for linklist_l2 in linklists %}
+          {% assign linklist_l2_title = linklist_l2.title | downcase | strip | replace: ' ', '' %}
+          {% if tiers_l2 == linklist_l2_title %}
+            <ul class="sub-nav catalog">
+              <li class="row">
+                {% for link_l2 in linklist_l2.links %}
+                  <div class="sub-nav-item columns">
+                    <a {% if link_l2.url == '#' %}class="disabled"{% endif %} href="{{ link_l2.url }}"><span>{{ link_l2.title }}</span></a>
+                    {% assign tiers_l3 = tiers_l2 | append: '>' | append: link_l2.title | downcase | strip | replace: ' ', '' %}
+                    {% for linklist_l3 in linklists %}
+                      {% assign linklist_l3_title = linklist_l3.title | downcase | strip | replace: ' ', '' %}
+                      {% if tiers_l3 == linklist_l3_title %}
+                        <ul>
+                          {% for link_l3 in linklist_l3.links %}
+                            <li>
+                              <a href="{{ link_l3.url }}">
+                                {{ link_l3.title }}
+                              </a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+              </li>
+            </ul>
+          {% endif %}
+        {% endfor %}
+
+
+      {% comment %} Close level 1 {% endcomment %}
+      </li>
+    {% endfor %}
+
+  </ul>
+</nav>
+
+{% if settings.show_multiple_currencies %}
+  <div class="currency-selector columns mobile">
+    <div class="container">
+      {% include 'snippet-currency-selector' %}
+    </div>
+  </div>
+{% endif %}
+

@@ -1,0 +1,163 @@
+{% assign products_per_row = section.settings.collections-products-per-row | to_number %}
+{% assign products_per_page =  products_per_row | to_number | times: section.settings.rows-per-page %}
+
+{% paginate collection.products by products_per_page %}
+
+<div
+  class="collection"
+  data-section-id="{{ section.id }}"
+  data-js-class="Collection"
+  data-section-type="collection"
+>
+
+  <header class="row">
+    <div class="left columns large-6">
+      {% if section.settings.collections-breadcrumbs-show %}
+        {% include 'snippet-breadcrumbs' %}
+      {% endif %}
+    </div>
+    <div class="right columns large-6">
+      <div class="tag-filter">
+        {% if collection.all_tags.size > 0 and section.settings.collections-tags-show %}
+
+            <span class="title">{{ 'collections.tags_title' | t }}</span>
+
+            <form class="custom">
+              <select class="small tags-listbox" name="coll-filter" size="1">
+                <option value="">{{ 'collections.tags_show_all' | t }}</option>
+                {% for tag in collection.all_tags %}
+                {% if current_tags contains tag %}
+                <option value="{{ tag | handleize }}" selected>{{ tag }}</option>
+                {% else %}
+                <option value="{{ tag | handleize }}">{{ tag }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </form>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <div class="row">
+    <div class="columns">
+      <div class="divider"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    {% if collection.description.size > 0 %}
+    <article class="description columns">
+      {{ collection.description }}
+    </article>
+    {% endif %}
+
+    {% if shop.products_count == 0 %}
+
+      {% include 'snippet-default-products' %}
+
+    {% else %}
+      <section class="row">
+        <div
+          class="product-grid--root"
+          data-items-per-row="{{ section.settings.collections-products-per-row }}"
+          data-mobile-items-per-row="{{ section.settings.mobile-items-per-row }}"
+          data-js-class="ProductGrid"
+        >
+          {% for product in collection.products %}
+            {% include 'partial--product' %}
+          {% endfor %}
+
+        </div>
+      </section>
+
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <div class="columns">
+      <div class="divider bottom-margin"></div>
+    </div>
+  </div>
+
+
+  <footer class="row">
+    <div class="left columns large-6">
+      {% if section.settings.collections-breadcrumbs-show %}
+        {% include 'snippet-breadcrumbs' %}
+      {% endif %}
+    </div>
+    <div class="right columns large-6">
+      {% include 'snippet-pagination' %}
+    </div>
+
+  </footer>
+
+</div> <!-- .collection -->
+
+{% endpaginate %}
+
+<script>
+  theme.collection = {
+    title: '{{ collection.title | escape }}',
+    url_for_type: '{{ collection.title | url_for_type }}',
+    url_for_handle: '{{ collection.title | url_for_vendor }}',
+    handle: '{{ collection.handle }}',
+    tag: '{{ "tag" | link_to_tag: "tag" }}'
+  };
+
+  theme.collection.products = {
+    first_type: '{{ collection.products.first.type }}',
+    first_vendor: '{{ collection.products.first.vendor }}'
+  };
+</script>
+
+{% schema %}
+{
+  "name": "Collection",
+  "class": "section--collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "collections-breadcrumbs-show",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "collections-tags-show",
+      "label": "Show tag filter",
+      "default": true
+    },
+    {
+      "id": "collections-products-per-row",
+      "label": "Products per row",
+      "type": "radio",
+      "options": [
+        { "value": "3", "label": "3"},
+        { "value": "4", "label": "4"}
+      ],
+      "default": "4"
+    },
+    {
+      "label": "Rows per page",
+      "id": "rows-per-page",
+      "type": "range",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "id": "mobile-items-per-row",
+      "label": "Products per row for small devices",
+      "type": "radio",
+      "options": [
+        { "value": "1", "label": "1"},
+        { "value": "2", "label": "2"}
+      ],
+      "default": "2"
+    }
+  ]
+}
+{% endschema %}

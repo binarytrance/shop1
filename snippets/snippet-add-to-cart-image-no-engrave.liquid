@@ -1,0 +1,84 @@
+<div class="add-to-cart-container js-side-menu">
+        <div class="sidebar-close-button js-sidebar-close-btn">
+          <img class="" src="{{'close.svg' | asset_url}}" />
+        </div>
+        
+        <div class="cart-customize-product-container">
+          <div class="cart-customize-product-tabs">
+            <ul class="list--no-style cart-customize-product-tabs__categories">
+              <li class="text--uppercase cart-customize-image active">image</li>
+            </ul>
+            <!-- START: image upload and engraving and submit to cart -->
+            <form action="/cart/add" method="post" id="product-form-{{ product.id }}" enctype= "multipart/form-data"> 
+            <ul class="list--no-style cart-customize-product-tabs__content">
+              <li class="cart-customize-product-tabs__content__image active">
+                <h3 class="text--uppercase choose-image-heading">choose your image</h3>
+                <p class="para instructions">Upload at least one image</p>
+                <p class="para instructions">Please upload images only up to 5 MB in size</p>
+                <div id="uploadPendantImage">  
+                  <div class="form-group line-item-property__field">
+                      <label class="upload-image-pendant-label" for=" image-1">
+                        <span>Upload or Drag and Drop here</span>
+                      </label>
+                      <input required type="file" placeholder="Your Name" class="required upload-image-pendant" name="properties[Uploaded Image 1]" id="image-1">
+                      <img class="pendant-image-preview" src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif">
+                    {% comment %} <span>Add new</span> {% endcomment %}
+                  </div>
+                  
+                  <div class="form-group line-item-property__field">
+                    <label class="upload-image-pendant-label" for="upload-image-pendant-label image-2">
+                      <span>Upload or Drag and Drop here</span>
+                    </label>
+                    <input type="file" placeholder="Your Email" class="upload-image-pendant" name="properties[Uploaded Image 2]" id="image-2">
+                    <img class="pendant-image-preview" src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif">
+                    {% comment %} <span>Add new</span> {% endcomment %}
+                  </div>
+                </div>
+                <div class="product-price-summary">
+                  <table>
+                    <thead></thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="product-title-cart">{{product.title}}
+                          {% if product.variants.size > 1 %}
+                            ({{variant.title}})
+                          {%endif%}
+                          </span>
+                        </td>
+                        <td>{{variant.price | money}}</td>
+                      </tr>
+                      <tr>
+                        <td><span class="engraving-title">Engraving and photo</span></td>
+                        <td class="free-style">FREE</td>
+                      </tr>
+                      <tr>
+                        <td>Quantity: <span class="js-show-quantity"></span><span class="js-item-quantity" style="display: none">{{variant.price | money}}</span></td>
+                        {% comment %} {% assign qty = %} {% endcomment %}
+                        <td><span class="total-price-cart">Total: <span id="totalPrice"></span></span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {% comment %} {{product.title}}
+                  {{variant.title}}
+                  {{product.price | money}}
+                  {{variant.price | money}} {% endcomment %}
+                </div>
+                {% comment %} <p class="notice-wrapper"><strong>*Note:</strong> <span class="notice">There will be little delay in a shipping because of christmas festival</span></p> {% endcomment %}
+                 <div class="form-group" class="add-to-cartButton">
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <input type="hidden" name="quantity" id="holdQuantityValue">
+                  <div class="line-item-property__field">
+                    <input type="hidden" name = "properties[Engraving Font]" id="engravingFont"/>
+                  </div>
+                  
+                  <div>
+                    <button class="button add-to-cart-btn w-100 bold" type="submit" name="add">Add to cart</button>
+                  </div>  
+                </div>
+                </form>
+              </li>
+            </ul>
+            <!-- END: image upload and engraving form -->
+          </div>
+        </div>
+      </div>

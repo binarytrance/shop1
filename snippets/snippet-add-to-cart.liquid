@@ -1,0 +1,121 @@
+<div class="add-to-cart-container js-side-menu">
+        <div class="sidebar-close-button js-sidebar-close-btn">
+          <img class="" src="{{'close.svg' | asset_url}}" />
+        </div>
+        
+        <div class="cart-customize-product-container">
+          <div class="cart-customize-product-tabs">
+            <ul class="list--no-style cart-customize-product-tabs__categories">
+              <li class="text--uppercase cart-customize-image active">image</li>
+              <li class="text--uppercase cart-customize-engraving">engraving</li>
+            </ul>
+            <ul class="list--no-style cart-customize-product-tabs__content">
+              <li class="cart-customize-product-tabs__content__image active">
+                <h3 class="text--uppercase choose-image-heading">choose your image</h3>
+                <p class="para instructions">Upload at least one image</p>
+                <p class="para instructions">Please upload images only up to 5m MB in size</p>
+                {% form 'product', product, id: "uploadPendantImage" %}
+                  <div class="form-group">
+                    <label class="upload-image-pendant-label" for=" image-1">
+                      <span>Upload or Drag and Drop here</span>
+                    </label>
+                    <input type="file" placeholder="Your Name" class="upload-image-pendant" name="pendant-image[image-1]" id="image-1">
+                    <img class="pendant-image-preview" src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif">
+                    {% comment %} <span>Add new</span> {% endcomment %}
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="upload-image-pendant-label" for="upload-image-pendant-label image-2">
+                      <span>Upload or Drag and Drop here</span>
+                    </label>
+                    <input type="file" placeholder="Your Email" class="upload-image-pendant" name="pendant-image[image-2]" id="image-2">
+                    <img class="pendant-image-preview" src="http://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif">
+                    {% comment %} <span>Add new</span> {% endcomment %}
+                  </div>
+                {%endform%}
+                <button class="text--uppercase button--engrave js-goto-engrave bold">continue to engraving</button>
+              </li>
+              <li class="cart-customize-product-tabs__content__engrave">
+                <h3 class="text--uppercase choose-image-heading">select engraving style</h3>
+                <p class="para instructions">Choose a style of engraving to personalize your design.</p>
+                <div class="engraving-product-image">
+                  <span id="engraving-text-preview"></span>
+                </div>
+                <div class="engraving-text-box">
+                  {% form 'product', product, id: "engraving-text"%}
+                    <div class="form-group">
+                      <label class="label-style" for="engraving-text-input">Engraving</label>
+                      <input type="text"  id="engraving-text-input" />
+                    </div>
+                    <p class="para label-style">Select font style</p>
+                    <div class="form-group engraving-text-fonts-box">
+                      <div class="form-group">
+                        <label class="engravingFont-label" for="georgiaFont">Georgia</label>
+                        <input class="hide-checkbox" type="radio" id="georgiaFont" checked="checked" name="engravingFontRadio"/>
+                      </div>
+                      <div class="form-group">
+                        <label class="engravingFont-label" for="segoeScriptFont">Segoe Script</label>
+                        <input class="hide-checkbox" type="radio" id="segoeScriptFont" name="engravingFontRadio"/>
+                      </div>
+                      <div class="form-group">
+                        <label class="engravingFont-label" for="arialFont">Arial</label>
+                        <input class="hide-checkbox" type="radio" id="arialFont" name="engravingFontRadio"/>
+                      </div>
+                      {% comment %} <div class="form-group">
+                        <label class="engravingFont-label" for="motionFont">Motion</label>
+                        <input class="hide-checkbox" type="radio" id="motionFont" name="engravingFontRadio"/>
+                      </div> {% endcomment %}
+                      
+                    </div>
+                  {%endform%}
+                </div>
+                <div class="product-price-summary">
+                  <table>
+                    <thead></thead>
+                    <tbody>
+                      <tr>
+                        <td>{{product.title}}
+                          {% if product.variants.size > 1 %}
+                            ({{variant.title}})
+                          {%endif%}
+                        </td>
+                        <td>{{variant.price | money}}</td>
+                      </tr>
+                      <tr>
+                        <td>Engraving and photo</td>
+                        <td>FREE</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>Total: {{variant.price | money}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {% comment %} {{product.title}}
+                  {{variant.title}}
+                  {{product.price | money}}
+                  {{variant.price | money}} {% endcomment %}
+                </div>
+                {% comment %} <p class="notice-wrapper"><strong>*Note:</strong> <span class="notice">There will be littledelay in a shipping because of christmas festival</span></p> {% endcomment %}
+                {% comment %} <button class="text--uppercase">finish & checkout</button> {% endcomment %}
+                {% comment %} <div class="add-to-cart">
+                  <!-- assignment of classes  based on condition -->
+                  {% assign cart_button_class = 'button' %}
+                  {% if section.settings.smart_payment_button %}
+                    {% assign cart_button_class = 'button--secondary' %}
+                  {% endif %}
+                  <input class="{{ cart_button_class }}" type="submit" name="add" id="add" value="{{ 'products.add_to_cart' | t }}" >
+                </div> {% endcomment %}
+
+                <form action="/cart/add" method="post" id="product-form-{{ product.id }}">   
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <div>
+                    <button class="button add-to-cart-btn w-100 bold" type="submit" name="add">Add to cart</button>
+                  </div>  
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="image-size-warning js-image-size-warning">Please upload an image with a size less than 5 MB</div>

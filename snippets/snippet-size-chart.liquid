@@ -1,0 +1,23 @@
+{% if template contains 'product' %}
+  {% assign size_options = section.settings.product-size-chart-option | downcase %}
+  {% assign has_size = false %}
+  {% assign size_index = 0 %}
+  {% if section.settings.product-size-chart-page-content == blank %}
+    {% capture size_chart_path %}
+      <code>{{ 'products.size_chart_path' | t }}</code>
+    {% endcapture %}
+    {% assign page_content = 'products.empty_page_content_html' | t: size_chart_path: size_chart_path %}
+  {% else %}
+    {% assign page_content = pages[section.settings.product-size-chart-page-content].content %}
+  {% endif %}
+  {% for option in product.options %}
+    {% assign downcased_option = option | downcase %}
+    {% if has_size == false and size_options contains downcased_option %}
+      {% assign has_size = true %}
+      {% assign size_index = forloop.index0 %}
+    {% endif %}
+  {% endfor %}
+  {% if has_size %}
+    <div class="size-chart rte-content">{{ page_content }}</div>
+  {% endif %}
+{% endif %}

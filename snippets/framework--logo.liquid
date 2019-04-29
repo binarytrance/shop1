@@ -1,0 +1,29 @@
+{% assign logo_type = 'text' %}
+{% if section.settings.logo %}
+  {% assign logo_type = 'image' %}
+  {% assign image_size = '600x200' %}
+{% endif %}
+
+<div class="fw--logo {% if logo_type == 'image' %}height-{{ section.settings.logo-height-range }}{% endif %} type--{{ logo_type }}">
+  <h1 class="item font--heading" itemscope itemtype="http://schema.org/Organization">
+    {% if logo_type == 'image' %}
+      <a href="{{ shop.url }}" title="{{ shop.name }}" itemprop="url">
+        {% if image_type == 'inverted' %}
+          <img
+            src="{{ section.settings.inverted-logo | img_url: image_size }}"
+            alt="{{ section.settings.inverted-logo.alt | default: shop.name }}"
+            itemprop="logo"
+          >
+        {% else %}
+          <img
+            src="{{ section.settings.logo | img_url: image_size }}"
+            alt="{{ section.settings.logo.alt | default: shop.name }}"
+            itemprop="logo"
+          >
+        {% endif %}
+      </a>
+    {% else %}
+      <a title="{{ shop.url }}" href="{{ shop.url }}">{{ shop.name }}</a>
+    {% endif %}
+  </h1>
+</div>

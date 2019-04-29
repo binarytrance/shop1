@@ -1,0 +1,37 @@
+<h2 class="title">{{ 'products.share_this' | t }}</h2>
+{% capture shareurl %}{{ shop.url }}{{ product.url }}{% endcapture %}
+
+{% if section.settings.product-share-twitter %}
+  <a class="share-item twitter" href="https://twitter.com/intent/tweet?text=Check%20out%20this%20{%if template contains "article" or template contains "blog"%}blog%20post{% elsif template contains "product" %}product{%endif%}:+{{ shareurl }}">
+    {% include 'snippet-symbol' with 'twitter' %}
+    <span>Tweet</span>
+  </a>
+{% endif %}
+
+{% if section.settings.product-share-facebook %}
+  <a class="share-item facebook" href="http://www.facebook.com/sharer.php?u={{ shareurl }}&t={{ product.title }}">
+    {% include 'snippet-symbol' with 'facebook' %}
+    <span>Like</span>
+  </a>
+{% endif %}
+
+{% if section.settings.product-share-pinterest %}
+  <a class="share-item pinterest" href="http://pinterest.com/pin/create/button/?url={{ shareurl }}&media={{ product.featured_image | img_url: '2000x' }}&description={{ product.title | strip_html | escape | replace: ' ', '%20' }}" count-layout="none">
+    {% include 'snippet-symbol' with 'pinterest' %}
+    <span>Pin</span>
+  </a>
+{% endif %}
+
+{% if section.settings.product-share-tumblr %}
+  <a class="share-item tumblr" href="http://www.tumblr.com/share/link?url={{ shareurl | replace: 'http://', '' }}">
+    {% include 'snippet-symbol' with 'tumblr' %}
+    <span>Post</span>
+  </a>
+{% endif %}
+
+{% if section.settings.product-share-google %}
+  <a class="share-item googleplus" href="https://plus.google.com/share?url={{ shareurl }}" onclick="javascript:window.open(this.href,  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
+  {% include 'snippet-symbol' with 'google-plus' %}
+  <span>Plus</span>
+  </a>
+{% endif %}

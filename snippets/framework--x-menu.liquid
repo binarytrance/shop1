@@ -1,0 +1,95 @@
+{% assign js_class = 'FrameworkXMenu' %}
+{% assign overlap_parent = 0 %}
+{% assign handle = 'main-menu' %}
+{% assign type = 'horizontal' %}
+{% assign off_canvas = 'left-sidebar' %}
+
+<nav
+  class="x-menu"
+  data-js-class="{{ js_class }}"
+  data-x-menu--align="{{ align }}"
+  data-x-menu--overlap="false"
+  data-x-menu--overlap-parent="{{ overlap_parent }}"
+  role="navigation"
+  aria-label="Primary"
+>
+  <div class="x-menu--overlap-icon">
+    <div class="off-canvas--open" data-off-canvas--open="{{ off_canvas }}">
+      {% include 'snippet-symbol' with 'menu' %}
+    </div>
+  </div>
+
+  <ul class="x-menu--level-1--container">
+
+    {% comment %} Level 1 {% endcomment %}
+    {% for link in linklists[handle].links %}
+      <li
+        class="x-menu--level-1--link"
+        data-x-menu--depth="{{ link.levels | plus: 1 }}"
+        data-x-menu--open="false"
+      >
+        {% if link.links != blank %}
+          <a
+            href="{{ link.url }}"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="x-menu--sub-{{ link.handle }}"
+          >
+            <span>
+              {{ link.title }}
+            </span>
+            {% include 'framework--icon', icon: 'expand-more' %}
+            {% include 'framework--icon', icon: 'expand-less' %}
+          </a>
+        {% else %}
+          <a href="{{ link.url }}"><span>{{ link.title }}</span></a>
+        {% endif %}
+
+          {% comment %} Level 2 {% endcomment %}
+          {% if link.links != blank %}
+            <div class="x-menu--level-2--container" id="x-menu--sub-{{ link.handle }}">
+              {% comment %}<div class="single-parents"></div> goes here{% endcomment %}
+              <div class="x-menu--bg"></div>
+              {% comment %}
+                Usually the ul is labeled as a container but this needs a separate container and
+                therefor is labeled --list
+              {% endcomment %}
+              <ul class="x-menu--level-2--list">
+
+                {% assign list = link.handle %}
+                {% for link in linklists[list].links %}
+
+                  <li
+                    class="x-menu--level-2--link"
+                    {% if link.links == blank %}data-x-menu--single-parent="true"{% endif %}
+                  >
+                    <a href="{{ link.url }}">{{ link.title }}</a>
+
+                    {% comment %} Level 3 {% endcomment %}
+
+                    {% if link.links != blank %}
+                      <ul class="x-menu--level-3--container">
+
+                        {% assign list = link.handle %}
+                        {% for link in linklists[list].links %}
+                          <li class="x-menu--level-3--link">
+                            <a href="{{ link.url }}">{{ link.title }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                    {% comment %} End Level 3 {% endcomment %}
+
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% comment %} End Level 2 {% endcomment %}
+
+      </li>
+    {% endfor %}
+  </ul>
+  {% comment %} End level 1 {% endcomment %}
+</nav>
+

@@ -1,0 +1,58 @@
+{% assign preload = false %}
+{% assign full_width = false %}
+{% assign image_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+{% assign widths = '295,394,590,700,800,1000,1200,1500,1800,2000,2400' %}
+{% assign widths = widths | split: ',' %}
+{% assign max_height = 0 %}
+
+{% capture valid_widths %}
+  {% for width in widths %}
+    {% assign width_int = width | plus: 0 %}
+    {% if image.width >= width_int %}{{ width_int }},{% endif %}
+  {% endfor %}
+  {{ image.width }}
+{% endcapture %}
+
+{% assign widths = valid_widths | strip_newlines | remove: ' ' %}
+
+{% assign lazy_classes = 'lazyload' %}
+{% if preload %}
+  {% assign lazy_classes = lazy_classes | append: ' lazypreload' %}
+{% endif %}
+
+{% assign width = image.width | append: "px" %}
+{% if max_height > 0 %}
+  {% assign width = max_height | times: image.aspect_ratio | round: 2 | append: 'px' %}
+{% elsif full_width %}
+  {% assign width = "100%" %}
+{% endif %}
+
+
+
+<div
+  class="image--root"
+  data-aspectratio="{{ image.aspect_ratio }}"
+  style="width: {{ width }};"
+  {{ custom_attributes }}
+>
+  <div
+    class="image--container"
+    style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;"
+  >
+    <img
+      class="{{ lazy_classes }}"
+      data-src="{{ image_url }}"
+      data-sizes="auto"
+      data-widths="[{{ widths }}]"
+      data-aspectratio="{{ image.aspect_ratio }}"
+      alt="{{ image.alt | escape }}"
+    >
+  </div>
+
+  <noscript>
+    <img
+      src="{{ image | img_url: '200x200' }}"
+      alt="{{ image.alt | escape }}"
+    >
+  </noscript>
+</div>

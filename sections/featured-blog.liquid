@@ -1,0 +1,120 @@
+{% comment %} Translations {% endcomment %}
+{% assign read_more_t = 'home.featured_blog.read_more' | t %}
+{% assign title_t = 'home.featured_blog.title' | t %}
+
+{% comment %} Variables {% endcomment %}
+{% assign heading = section.settings.heading | escape %}
+{% assign blog = blogs[section.settings.blog] %}
+{% assign link = blog.url %}
+{% include 'framework--background-colors', bg_color: section.settings.background-color %}
+
+{% comment %} View {% endcomment %}
+<div
+  class="featured-blog--root"
+  data-section-id="{{ section.id }}"
+  data-js-class="FeaturedBlog"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+  {% if heading != blank %}
+    <div class="featured-blog--header">
+      <h2 class="featured-blog--heading"><a href="{{ link }}">{{ heading }}</a></h2>
+    </div>
+  {% endif %}
+
+  <div class="featured-blog--body">
+    {% comment %} Onboarding {% endcomment %}
+    {% if blog == empty %}
+      {% assign title = title_t %}
+      {% assign link = article.url %}
+      {% capture image %}
+        {%
+          include "framework--placeholder",
+          type: "image",
+          aspect_ratio: 1
+        %}
+      {% endcapture %}
+
+      {% for i in (1..3) %}
+        <div class="featured-blog--item">
+          <a href="{{ link }}">
+            <div class="featured-blog--item--image">{{ image }}</div>
+            <h3 class="featured-blog--item--title">{{ title }}</h3>
+          </a>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% for article in blog.articles limit: 3 %}
+        {% comment %} Variables {% endcomment %}
+        {% assign title = article.title %}
+        {% assign link = article.url %}
+
+        {% if article.image %}
+          {% capture image %}
+            {%
+              include "framework--image",
+              image: article.image
+            %}
+          {% endcapture %}
+        {% endif %}
+
+        {% comment %} View {% endcomment %}
+        <div class="featured-blog--item" {{ block.shopify_attributes }}>
+          <a href="{{ link }}">
+            {% if article.image %}
+              <div class="featured-blog--item--image">{{ image }}</div>
+            {% endif %}
+            <h3 class="featured-blog--item--title">{{ title }}</h3>
+          </a>
+
+          {% comment %}{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}{% endcomment %}
+
+          {% comment %}
+          <div class="rte-content">
+            <a class="featured-blog--item--more" href="{{ link }}">{{ read_more_t }}</a>
+          </div>
+          {% endcomment %}
+        </div>
+      {% endfor %}
+
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Blog posts",
+    "settings": [
+      {
+        "id": "background-color",
+        "label": "Background color",
+        "type": "select",
+        "options": [
+          { "label": "None", "value": "none" },
+          { "label": "Light grey", "value": "light" },
+          { "label": "Accent", "value": "accent" }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Blog"
+      },
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog posts",
+        "category": "Blog",
+        "settings": {
+          "blog": "News"
+        }
+      }
+    ]
+  }
+{% endschema %}

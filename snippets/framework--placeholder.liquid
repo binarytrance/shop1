@@ -1,0 +1,14 @@
+{% comment %} Aspect ratio needs at least one decimal {% endcomment %}
+{% assign aspect_ratio = 1 %}
+{% assign placeholder = type %}
+{% if placeholder_index %}
+  {% capture placeholder %}{{type}}-{{placeholder_index}}{% endcapture %}
+{% endif %}
+<div class="placeholder--root">
+  <div
+    class="placeholder--container"
+    style="padding-top:{{ 1 | divided_by: aspect_ratio | times: 100}}%;"
+  >
+    {{ placeholder | placeholder_svg_tag }}
+  </div>
+</div>

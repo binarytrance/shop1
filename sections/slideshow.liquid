@@ -1,0 +1,291 @@
+<section class="slider {{ settings.color-icons-theme }}"
+         data-section-id="{{ section.id }}"
+         data-autoplay="{{ section.settings.autoplay }}"
+         data-rotate-frequency="{{ section.settings.rotate-frequency-range | times: 1000 }}"
+         data-transition-style="{{ section.settings.transition_style }}">
+  <div class="row">
+    <div class="slides">
+
+      {% for block in section.blocks %}
+
+        {%- assign slide_is_video = false -%}
+        {% if block.type == 'video' %}
+          {%- assign slide_is_video = true -%}
+        {% endif %}
+
+        {%- assign caption_exists = false -%}
+        {% if block.settings.slide-title.size > 0 or block.settings.slide-tagline.size > 0 or block.settings.slide-link-title.size > 0 %}
+          {%- assign caption_exists = true -%}
+        {% endif %}
+
+        {%- assign slide_is_link = false -%}
+        {% if block.settings.slide-link-url.size > 0 and block.settings.slide-link-title == blank %}
+          {%- assign slide_is_link = true -%}
+        {% endif %}
+
+        <div class="slide{% if block.settings.slide-video.size > 0 %} video{% endif %}"
+             data-id="{{ block.id }}"
+          {{ block.shopify_attributes }}>
+
+          {% if slide_is_link %}
+          <a href="{{ block.settings.slide-link-url }}">
+          {% endif %}
+
+          {% if block.settings.image == blank %}
+            {% if block.type == "image" or block.type == "video" %}
+              {% assign placeholder_index = forloop.index | modulo: 2 | plus: 1 %}
+              {%
+                include "framework--placeholder",
+                type: "lifestyle",
+                aspect_ratio: 2.22,
+                placeholder_index: placeholder_index
+              %}
+            {% endif %}
+          {% else %}
+            {%
+              include 'framework--image',
+              image: block.settings.image,
+              link: widget_image_link,
+              full_width: true
+            %}
+          {% endif %}
+
+          {% if block.settings.slide-video.size > 0 %}
+            {% assign video_src = '' %}
+            {% assign attributes = block.settings.slide-video | escape | split: ' ' %}
+            {% for attribute in attributes %}
+              {% assign match = attribute | truncate: 4, '' %}
+              {% if match == 'src=' or match == 'http' %}
+                {% assign video_src = attribute | replace: 'src=', '' | replace: '"', '' | replace: "'", ""  %}
+              {% endif %}
+            {% endfor %}
+
+            <a href="{{ video_src }}" class="play-button"><div class="triangle"></div></a>
+          {% endif %}
+
+
+          {% if caption_exists %}
+              <div class="caption {{ block.settings.slide-x-pos }} {{ block.settings.slide-y-pos }} {{ block.settings.slide-text-pos }}">
+                <div class="bg"></div>
+              {% if block.settings.slide-title.size > 0 %}
+                <h2 class="title">{{ block.settings.slide-title | escape }}</h2>
+              {% endif %}
+
+              {% if block.settings.slide-tagline.size > 0 %}
+                <p class="sub-title">{{ block.settings.slide-tagline | escape }}</p>
+              {% endif %}
+
+              {% if block.settings.slide-link-title.size > 0 %}
+                <div class="slideshow--button">
+                  <a class="button" href="{{ block.settings.slide-link-url }}">
+                    {{ block.settings.slide-link-title | escape }}
+                  </a>
+                </div>
+              {% endif %}
+            </div><!--.slide_caption -->
+          {% endif %}
+
+          {% if slide_is_link %}
+          </a>
+          {% endif %}
+        </div>
+
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if section.blocks.size == 0 %}
+    {% include 'snippet-no-blocks' %}
+  {% endif %}
+</section>
+
+<div class="modal video">
+  <div class="bg"></div>
+  <button class="close">
+    {% include 'snippet-symbol' with 'cross' %}
+  </button>
+
+  <div class="player columns large-8">
+    <div class="flex-video">
+    </div>
+  </div>
+
+  <div class="caption columns large-4">
+
+  </div>
+</div>
+<div class="modal-mask"></div>
+
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "class": "section--slideshow",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-rotate slides",
+      "default": false
+    },
+    {
+      "type": "radio",
+      "id": "transition_style",
+      "label": "Transition style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Slide"
+        },
+        {
+          "value": "fade",
+          "label": "Fade"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "label": "Rotate frequency (seconds)",
+      "id": "rotate-frequency-range",
+      "type": "range",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "default": 7
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "2000 x 1100px recommended"
+        },
+        {
+          "type": "video_url",
+          "id": "slide-video",
+          "label": "YouTube or Vimeo link",
+          "accept": ["youtube", "vimeo"],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "2000 x 1100px recommended"
+        },
+        {
+          "type": "text",
+          "id": "slide-title",
+          "label": "Heading",
+          "default": "Slideshow"
+        },
+        {
+          "type": "text",
+          "id": "slide-tagline",
+          "label": "Subheading",
+          "default": "Introduce your store or campaign with this slideshow section."
+        },
+        {
+          "type": "url",
+          "id": "slide-link-url",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "slide-link-title",
+          "label": "Button label",
+          "default": "Link to content"
+        },
+        {
+          "type": "header",
+          "content": "Textbox position"
+        },
+        {
+          "type": "select",
+          "id": "slide-y-pos",
+          "label": "Vertical",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "middle",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ],
+          "default": "middle"
+        },
+        {
+          "type": "select",
+          "id": "slide-x-pos",
+          "label": "Horizontal",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "slide-text-pos",
+          "label": "Text alignment",
+          "options": [
+            {
+              "value": "text-left",
+              "label": "Text aligned left"
+            },
+            {
+              "value": "text-center",
+              "label": "Text aligned center"
+            }
+          ],
+          "default": "text-left"
+        }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Slideshow",
+    "category": "Image",
+    "settings": {
+      "autoplay": true,
+      "rotate-frequency-range": 7
+    },
+    "blocks": [
+      {
+        "type": "image"
+      },
+      {
+        "type": "image"
+      }
+    ]
+  }]
+}
+{% endschema %}

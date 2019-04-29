@@ -1,0 +1,64 @@
+{% comment %} Variables {% endcomment %}
+{% assign heading = section.settings.heading | escape %}
+{% include 'framework--background-colors', bg_color: section.settings.background-color %}
+
+{% comment %} View {% endcomment %}
+<div
+  class="featured-text--root"
+  data-section-id="{{ section.id }}"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+  <div class="featured-text--container">
+    {% if heading != blank %}
+      <div class="featured-text--header">
+        <h2 class="featured-text--heading">{{ heading }}</h2>
+      </div>
+    {% endif %}
+    <div class="featured-text--body rte-content">
+      {{ section.settings.text }}
+    </div>
+  </div>
+
+</div>
+
+
+{% schema %}
+  {
+    "name": "Rich text",
+    "settings": [
+      {
+        "id": "background-color",
+        "label": "Background color",
+        "type": "select",
+        "options": [
+          { "label": "None", "value": "none" },
+          { "label": "Light grey", "value": "light" },
+          { "label": "Accent", "value": "accent" }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Talk about your brand"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text",
+        "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Rich text",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}

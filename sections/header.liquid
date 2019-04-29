@@ -1,0 +1,208 @@
+<style>
+  header .logo-image {
+    max-height: {{ section.settings.logo-height }}px;
+  }
+
+  {% unless section.settings.logo %}
+    body { background: #fff; }
+    {% assign font--logo = settings.typography--logo %}
+    {{ font--logo | font_face }}
+  {% endunless %}
+</style>
+
+<div
+  class="header"
+  {% if template contains 'index' and section.settings.transparent-menu %}
+    data-header--menu-transparent="true"
+  {% else %}
+    data-header--menu-transparent="false"
+  {% endif %}
+  data-section-id="{{ section.id }}"
+  data-section-type="header-section"
+  data-js-class="Header"
+>
+
+  <div class="header--y-menu-for-off-canvas">
+    {% include 'framework--y-menu', handle: section.settings.menu %}
+  </div>
+
+  {% include 'snippet-promo-bar' %}
+
+  <header class="main-header">
+    <div class="header--bg"></div>
+    <div class="row top">
+      {% if settings.show_multiple_currencies and section.settings.header-logo-center %}
+        <div class="currency-selector columns left-aligned">
+          {% include 'snippet-currency-selector' %}
+        </div>
+      {% endif %}
+
+      <div class="columns{% if section.settings.header-logo-center %} logo-center{% endif %}">
+        {% include 'snippet-store-title' %}
+      </div>
+
+      <div class="search-account columns">
+        {% include 'snippet-searchbar-account' %}
+      </div>
+
+    </div><!-- .row -->
+
+    <div class="bottom-row font--accent">
+      <div class="row {% if section.settings.header-menu-center %} text-center{% endif %}">
+
+      {% if linklists[section.settings.menu].links.size > 0 %}
+        {% assign header_nav = section.settings.menu %}
+
+        {% assign menu_alignment = 'left' %}
+        {% if section.settings.header-menu-center %}
+          {% assign menu_alignment = 'center' %}
+        {% endif %}
+
+        {%
+          include 'framework--x-menu',
+          js_class: 'XMenu',
+          align: menu_alignment,
+          handle: section.settings.menu
+        %}
+
+      {% endif %}
+
+        <div class="columns cart-container">
+          {% include 'snippet-cart', view: 'desktop' %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="header--mobile">
+      <div class="off-canvas--open" data-off-canvas--open="left-sidebar">
+        {% include 'snippet-symbol' with 'menu' %}
+      </div>
+
+      <div class="header--mobile--title">
+        {% include 'snippet-store-title' %}
+      </div>
+
+      <div class="header--mobile--cart">
+        <a class="header--mobile--cart-link font--accent" href="/cart">
+          {{ 'layout.header.cart' | t }}
+          <span class="number-wrapper {% if cart.item_count == 0 %}hide{% endif %}">
+            (<span class="number">{{ cart.item_count }}</span>)
+          </span>
+          {% include 'snippet-symbol' with 'cart' %}
+        </a>
+        <div class="header--mobile--recently-added">
+          {% include 'snippet-cart', view: 'mobile' %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="header-divider"></div>
+    </div>
+
+  </header>
+
+
+
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section--header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "transparent-menu",
+      "label": "Transparent on home page",
+      "info": "Only recommended when slideshow is first section"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "header-search-show",
+      "label": "Enable search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "header-account-show",
+      "label": "Enable customer account links",
+      "default": true,
+      "info": "[You will also need to enable customer accounts in your store settings](http:\/\/docs.shopify.com\/manual\/your-store\/customers\/customer-accounts)"
+    },
+    {
+      "type": "checkbox",
+      "id": "header-menu-center",
+      "label": "Center align menu"
+    },
+    {
+      "type": "header",
+      "content": "Logo options"
+    },
+    {
+      "type": "checkbox",
+      "id": "header-logo-center",
+      "label": "Center align"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Image",
+      "info": "1600 x 200px max"
+    },
+    {
+      "label": "Image Height",
+      "id": "logo-height",
+      "type": "range",
+      "min": 15,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "info": "This is referring to the natural height and should be half the height of the image you uploaded to ensure it stays sharp on retina screens."
+    },
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "select",
+      "id": "header--promo-bar--show-on",
+      "label": "Show on",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "all",
+          "label": "All pages"
+        },
+        {
+          "value": "home",
+          "label": "Home page"
+        }
+      ]
+    },
+    {
+      "type":  "text",
+      "id":    "header--promo-bar--text",
+      "label": "Text",
+      "default": "Add your promotional message"
+    },
+    {
+      "type":  "url",
+      "id":    "header--promo-bar--link",
+      "label": "Link",
+      "info": "Optional"
+    }
+  ]
+}
+{% endschema %}

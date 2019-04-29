@@ -1,0 +1,64 @@
+  {% case view %}
+    {% comment %} Sidebar {% endcomment %}
+    {% when 'sidebar' %}
+      <div class="search" data-js-class="FrameworkSearch" data-search--view="{{ view }}">
+        <form  action="/search" method="get" role="search">
+          <input type="hidden" name="type" value="product" />
+          <div class="search--icon">
+            {% include 'snippet-symbol' with 'search' %}
+          </div>
+          <div class="search--loading"><span class="animation tiny"></span></div>
+          <input
+            class="search--textbox small"
+            name="q"
+            type="text"
+            placeholder="{{ 'general.search.placeholder_bar' | t }}"
+          >
+          <div class="search--clear">{{ 'general.search.clear' | t }}</div>
+        </form>
+
+        <div class="search--feedback">
+
+          <div class="search--no-results">{{ 'general.search.no_results' | t }}</div>
+        </div>
+
+        <div class="search--results"></div>
+      </div>
+
+    {% comment %} Modal {% endcomment %}
+    {% when 'modal' %}
+
+      <div class="modal" data-js-class="FrameworkModal" data-force-view="absolute">
+        <a class="modal--link" aria-label="{{ 'general.search.open_search_dialog' | t }}" tabindex="0" >
+          {% include 'snippet-symbol' with 'search' %}
+        </a>
+
+        <div class="modal--content">
+          <div class="search" data-js-class="FrameworkSearch" data-search--view="{{ view }}">
+            <form  action="/search" method="get" role="search">
+              <input type="hidden" name="type" value="product" />
+              <div class="search--icon">
+                {% include 'snippet-symbol' with 'search' %}
+              </div>
+              <div class="search--loading"><span class="animation tiny"></span></div>
+              <input
+                class="search--textbox small"
+                name="q"
+                type="text"
+                placeholder="{{ 'general.search.placeholder_modal' | t }}"
+              >
+              <div class="search--clear">{{ 'general.search.clear' | t }}</div>
+            </form>
+
+            <div class="search--feedback">
+
+              <div class="search--no-results colored-links">{{ 'general.search.no_results' | t }} <a href="{{ shop.url }}/collections/all">{{ 'general.search.continue_browsing' | t }}</a></div>
+            </div>
+
+            <div class="search--results"></div>
+          </div>
+        </div>
+      </div>
+
+  {% endcase %}
+

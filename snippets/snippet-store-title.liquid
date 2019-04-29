@@ -1,0 +1,19 @@
+<h1 class="title clearfix" role="banner">
+
+  {% if section.settings.logo %}
+    {% capture image_height %}x{{ section.settings.logo-height }}{% endcapture %}
+    {% assign key = section.settings.logo %}
+    {% assign alt = section.settings.logo.alt %}
+
+    <a href="/" role="banner" title="{{ shop.name }}">
+      <img class="logo-image"
+           src="{{ key | img_url: image_height }}"
+           srcset="{{ key | img_url: image_height }} 1x,
+                   {{ key | img_url: image_height, scale: 2 }} 2x"
+           alt="{{ alt | default: shop.name }}"
+           itemprop="logo">
+    </a>
+  {% else %}
+    <a class="font--logo" href="/">{{ shop.name }}</a>
+  {% endif %}
+</h1>

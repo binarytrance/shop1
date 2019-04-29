@@ -1,0 +1,169 @@
+
+
+{% comment %} Variables {% endcomment %}
+{% include 'framework--background-colors', bg_color: section.settings.background-color %}
+
+{% assign username = section.settings.username %}
+{% assign access_token = section.settings.access-token %}
+{% assign rows = section.settings.rows %}
+{% assign columns = section.settings.columns %}
+
+{% assign heading = section.settings.heading | escape %}
+{% assign footer = section.settings.footer | escape %}
+
+{% assign total_items = rows | times: columns %}
+{% assign item_width = 100.00 | divided_by: columns | append: '%' %}
+
+{% assign header_text_exists = true %}
+{% if heading == blank %}
+  {% assign header_text_exists = false %}
+{% endif %}
+
+{% assign footer_text_exists = true %}
+{% if footer == blank %}
+  {% assign footer_text_exists = false %}
+{% endif %}
+
+
+{% comment %} View {% endcomment %}
+<style>
+  [data-section-id="{{ section.id }}"] .instagram--item {
+    width: {{ item_width }};
+  }
+
+  @media only screen and (max-width: 767px) {
+    [data-section-id="{{ section.id }}"] .instagram--item {
+      width: 50%;
+    }
+  }
+</style>
+
+<div
+  class="instagram--root"
+  data-section-id="{{ section.id }}"
+  data-js-class="FrameworkInstagram"
+  data-access-token="{{ access_token }}"
+  data-footer-text-exists="{{ footer_text_exists }}"
+  data-full-width="{{ section.settings.full-width }}"
+  data-header-text-exists="{{ header_text_exists }}"
+  data-username="{{ username }}"
+  data-rows="{{ section.settings.rows }}"
+  data-columns="{{ section.settings.columns }}"
+  data-spacing="{{ section.settings.spacing }}"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+  {% if heading != blank %}
+    <div class="instagram--header">
+      <h2 class="instagram--heading"><a href="https://instagram.com/{{ username }}">{{ heading }}</a></h2>
+    </div>
+  {% endif %}
+
+  <div class="instagram--body">
+
+    {% if access_token == blank %}
+      {% for i in (1..total_items) %}
+        <div class="instagram--item">
+          {%
+            include "framework--placeholder",
+            type: "image",
+            aspect_ratio: 1
+          %}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+  </div>
+
+  {% if footer != blank %}
+    <div class="instagram--footer rte-content">
+      <a class="instagram--footer-link" href="https://instagram.com/{{ username }}">{{ footer }}</a>
+    </div>
+  {% endif %}
+
+</div>
+
+{% schema %}
+{
+  "name": "Instagram feed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "username",
+      "label": "Username"
+    },
+    {
+      "type": "text",
+      "id": "access-token",
+      "label": "Access token",
+      "info": "[Get your access token](http:\/\/troopthemes.com\/pages\/instagram-integration)"
+    },
+    {
+      "type": "header",
+      "content": "Layout and Color"
+    },
+    {
+      "id": "background-color",
+      "label": "Background color",
+      "type": "select",
+      "options": [
+        { "label": "None", "value": "none" },
+        { "label": "Light grey", "value": "light" },
+        { "label": "Accent", "value": "accent" }
+      ],
+      "default": "light"
+    },
+    {
+      "id": "full-width",
+      "label": "Full width",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "spacing",
+      "label": "Show spacing between images",
+      "type": "checkbox",
+      "default": true
+    },
+    {
+      "id": "rows",
+      "label": "Rows",
+      "type": "range",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "id": "columns",
+      "label": "Images per row",
+      "type": "range",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "id": "heading",
+      "label": "Heading",
+      "type": "text",
+      "default": "Instagram"
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "type": "text",
+      "default": "Follow @shopify on Instagram"
+    }
+  ],
+  "presets": [
+    {
+      "category": "Social media",
+      "name": "Instagram feed"
+    }
+  ]
+}
+{% endschema %}

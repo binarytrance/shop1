@@ -1,0 +1,86 @@
+{% if section.settings.home-product-slider-collection == blank or collections[section.settings.home-product-slider-collection].handle != section.settings.home-product-slider-collection %}
+  {% for c in collections %}
+    {% if c.products-count > 0 %}
+      {% assign collection = c %}
+    {% endif %}
+  {% endfor %}
+{% else %}
+  {% assign collection = collections[section.settings.home-product-slider-collection] %}
+{% endif %}
+
+{%- assign slider_limit = section.settings.max_products -%}
+{% include 'framework--background-colors', bg_color: section.settings.background-color %}
+
+<div
+  class="product-slider{% if collection.products.size < 4 and collection.products.size != 0 %} disabled{% endif %} {{ settings.color-icons-theme }} length--{{ collection.products.size }}"
+  style="{% if bg_color %}background-color: {{ bg_color }};{% endif %}"
+>
+  <div class="row header">
+    <div class="columns">
+     <h2 class="clearfix">
+      {% if collection.products.size %}
+        {{ collection.title | link_to: collection.url }}
+      {% else %}
+        {{ 'home.onboarding.featured_collection' | t }}
+      {% endif %}
+     </h2>
+   </div>
+  </div>
+  <div class="row content">
+    <div
+      class="product-grid--root"
+      data-js-class="ProductGrid"
+      data-in-slider="true"
+    >
+      {% if collection.products.size and collection.products.size > 0 %}
+        {% for product in collection.products limit: slider_limit %}
+          {% include 'partial--product', view: 'product-slider' %}
+        {% endfor %}
+      {% else %}
+        {% for i in (1..6) %}
+          {% include 'partial--product', onboarding: true, index: i %}
+        {% endfor %}
+      {% endif %}
+    </div> <!-- .product-grid.clearfix -->
+  </div> <!-- .row.content -->
+</div><!-- #product-slider -->
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "class": "section--featured-collection",
+  "settings": [
+    {
+      "id": "background-color",
+      "label": "Background color",
+      "type": "select",
+      "options": [
+        { "label": "None", "value": "none" },
+        { "label": "Light grey", "value": "light" },
+        { "label": "Accent", "value": "accent" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "collection",
+      "id": "home-product-slider-collection",
+      "label": "Choose collection"
+    },
+    {
+      "label": "Amount of products to show",
+      "id": "max_products",
+      "type": "range",
+      "min": 4,
+      "max": 20,
+      "step": 4,
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
